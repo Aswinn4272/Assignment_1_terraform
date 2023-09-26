@@ -1,6 +1,5 @@
 provider "aws" {
-  version = "~> 5.0"
-  region  = "us-east-1"
+  region  = "ap-south-1"
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
@@ -14,7 +13,7 @@ resource "aws_vpc" "my_vpc" {
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id # creating public subnet in my vpc
   cidr_block              = "10.0.1.0/24" 
-  availability_zone       = "us-east-1a" 
+  availability_zone       = "ap-south-1a" 
   map_public_ip_on_launch = true
 }
 
@@ -22,7 +21,7 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id # creating private subnet in my vpc
   cidr_block              = "10.0.2.0/24" 
-  availability_zone       = "us-east-1b" 
+  availability_zone       = "ap-south-1b" 
 }
 
 # Create a security group for EC2 instance
@@ -50,10 +49,10 @@ resource "aws_security_group" "my_security_group" {
 
 # EC2 instance
 resource "aws_instance" "my_instance" {
-  ami           = "ami-XXXXXXXXXXXXXXXX" # give a ami id here
+  ami           = "ami-0f5ee92e2d63afc18"   # ami id
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public_subnet.id # creating instance in the public subnet 
-  security_groups = [aws_security_group.my_security_group.name] # attaching security group with this EC2 instance
+subnet_id     = aws_subnet.public_subnet.id    # creating instance in the public subnet 
+vpc_security_group_ids = [aws_security_group.my_security_group.id]    # attaching security group with this EC2 instance
 
   root_block_device {
     volume_size = 8
@@ -61,7 +60,7 @@ resource "aws_instance" "my_instance" {
   }
 
   tags = {
-    purpose = "Assignment" # tag as key should be "purpose" and value should be "Assignment".
+    purpose = "Assignment"    # tag as key should be "purpose" and value should be "Assignment"
   }
 }
 
